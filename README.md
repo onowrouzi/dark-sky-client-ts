@@ -53,7 +53,6 @@ async get(
   )
 ```
 
-###### Note: Responses are stored for the duration of the refresh rate, unless it is a Time Machine request.
 
 ```javascript
 getRequestParams(); // Returns current request params.
@@ -89,13 +88,6 @@ setTime(time: number | string) // Sets time for Time Machine requests, parsed in
 
 ###### Note: `time` is used for Time Machine requests and is reset to null after each call.
 
-```javascript
-getRefreshRate(): number // Gets current refresh rate for data in minutes.
-```
-
-```javascript
-setRefreshRate(refreshRate: number) // Sets current refresh rate for data in minutes. Minimum is 30.
-```
 
 ## DarkSkyRequestObject
 
