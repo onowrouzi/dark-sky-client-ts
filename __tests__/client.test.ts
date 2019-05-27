@@ -58,7 +58,7 @@ describe("Dark Sky Client Tests", () => {
 
     const res = (await api.get(null, {
       latitude: lat,
-      longitute: lng,
+      longitude: lng,
       lang: "zh",
       units: "uk2",
       timeString: new Date("05/08/2018").toISOString()
@@ -101,7 +101,7 @@ describe("Dark Sky Client Tests", () => {
 
     api.setRequestParams({
       latitude: 0,
-      longitute: 0,
+      longitude: 0,
       lang: "en",
       units: "us",
       exclude: ["minutely", "flags"]
@@ -110,7 +110,7 @@ describe("Dark Sky Client Tests", () => {
     const params = api.getRequestParams();
 
     expect(params.latitude).toBe(0);
-    expect(params.longitute).toBe(0);
+    expect(params.longitude).toBe(0);
     expect(params.lang).toBe("en");
     expect(params.units).toBe("us");
     expect(params.exclude).toEqual(["minutely", "flags"]);

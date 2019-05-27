@@ -27,7 +27,7 @@ async getHourly() {
 
 async getDaily() {
     const daily = await dsApi.get("daily", {
-        latitude: -38.590451, 
+        latitude: -38.590451,
         longitude: 175.541561,
         lang: "zh",
         units: "uk2"
@@ -102,7 +102,7 @@ setRefreshRate(refreshRate: number) // Sets current refresh rate for data in min
 ```javascript
 {
   latitude?: number; // Required. Set either in constructor or using setCoords client method.
-  longitute?: number; // Required. Set either in constructor or using setCoords client method.
+  longitude?: number; // Required. Set either in constructor or using setCoords client method.
   exclude?: DarkSkyRootField[]; // List of root fields to exclude from returned data.
   lang?: DarkSkySupportedLanguage; // Language string that matches supported list.
   units?: DarkSkyUnitType; // Unit of measurement that matches supported list.

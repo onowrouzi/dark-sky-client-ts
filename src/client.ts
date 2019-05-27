@@ -75,7 +75,7 @@ export class DarkSkyApiClient {
 
   setCoords(lat: number, lng: number) {
     this.params.latitude = lat;
-    this.params.longitute = lng;
+    this.params.longitude = lng;
   }
 
   setExcludes(excludes: DarkSkyRootField[]) {
@@ -116,12 +116,12 @@ export class DarkSkyApiClient {
       throw new Error("No api key specified.");
     }
 
-    if (!params.latitude || !params.longitute) {
+    if (!params.latitude || !params.longitude) {
       throw new Error("No latitude or longitude specified");
     }
 
     let url = `${this.baseURL}/${this.key}/${params.latitude},${
-      params.longitute
+      params.longitude
     }?`;
 
     if (params.exclude && params.exclude.length > 0) {

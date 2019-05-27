@@ -4,7 +4,7 @@ import { DarkSkyUnitType } from "./unit-type";
 
 export type DarkSkyRequestObject = {
   latitude?: number;
-  longitute?: number;
+  longitude?: number;
   exclude?: DarkSkyRootField[];
   lang?: DarkSkySupportedLanguage;
   units?: DarkSkyUnitType;
