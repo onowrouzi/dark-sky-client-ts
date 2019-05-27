@@ -16,6 +16,23 @@ DISCLAIMER: This does not use a proxy and as such does not hide your api key dur
 import { DarkSkyApiClient } from "dark-sky-client-ts"; // And any other types needed.
 
 const dsApi = new DarkSkyApiClient(apiKey, params);
+
+async getWeather() {
+    const weather = await dsApi.get();
+}
+
+async getHourly() {
+    const hourly = await dsApi.get("hourly");
+}
+
+async getDaily() {
+    const daily = await dsApi.get("daily", {
+        latitude: -38.590451, 
+        longitude: 175.541561,
+        lang: "zh",
+        units: "uk2"
+    });
+}
 ```
 
 ## DarkSkyApiClient
