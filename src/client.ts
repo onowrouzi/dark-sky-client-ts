@@ -9,6 +9,9 @@ import { DarkSkyAlertObject } from "./types/alert-object";
 import { DarkSkyFlagsObject } from "./types/flags-object";
 import { get } from "request-promise-native";
 import fetchJsonp = require("fetch-jsonp");
+import { DarkSkyCurrentlyResponse } from "./types/currently-resposne";
+import { DarkSkyHourlyBlockObject } from "./types/hourly-block-object";
+import { DarkSkyDailyBlockObject } from "./types/daily-block-object";
 
 export class DarkSkyApiClient {
   private readonly baseURL = "https://api.darksky.net/forecast";
@@ -43,6 +46,9 @@ export class DarkSkyApiClient {
     | DarkSkyResponseObject
     | DarkSkyDataBlockObject
     | DarkSkyDataPointObject
+    | DarkSkyCurrentlyResponse
+    | DarkSkyHourlyBlockObject
+    | DarkSkyDailyBlockObject
     | DarkSkyAlertObject[]
     | DarkSkyFlagsObject
   > {
@@ -69,20 +75,20 @@ export class DarkSkyApiClient {
     return (await this.get()) as DarkSkyResponseObject;
   }
 
-  async getCurrent(): Promise<DarkSkyDataPointObject> {
-    return (await this.get("currently")) as DarkSkyDataPointObject;
+  async getCurrent(): Promise<DarkSkyCurrentlyResponse> {
+    return (await this.get("currently")) as DarkSkyCurrentlyResponse;
   }
 
   async getMinutely(): Promise<DarkSkyDataBlockObject> {
     return (await this.get("minutely")) as DarkSkyDataBlockObject;
   }
 
-  async getHourly(): Promise<DarkSkyDataBlockObject> {
-    return (await this.get("hourly")) as DarkSkyDataBlockObject;
+  async getHourly(): Promise<DarkSkyHourlyBlockObject> {
+    return (await this.get("hourly")) as DarkSkyHourlyBlockObject;
   }
 
-  async getDaily(): Promise<DarkSkyDataBlockObject> {
-    return (await this.get("daily")) as DarkSkyDataBlockObject;
+  async getDaily(): Promise<DarkSkyDailyBlockObject> {
+    return (await this.get("daily")) as DarkSkyDailyBlockObject;
   }
 
   async getAlerts(): Promise<DarkSkyAlertObject[]> {

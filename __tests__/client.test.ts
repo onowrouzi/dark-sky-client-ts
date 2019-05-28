@@ -1,6 +1,7 @@
 import { DarkSkyResponseObject } from "../src/types/response-object";
 import { DarkSkyDataBlockObject } from "../src/types/data-block-object";
 import { DarkSkyApiClient } from "./../src";
+import { DarkSkyHourlyBlockObject } from "../src/types/hourly-block-object";
 
 require("dotenv").config();
 
@@ -69,7 +70,7 @@ describe("Dark Sky Client Tests", () => {
   it("DarkSkyApiClient - get (hours with previously excluded hourly field) - Returns DarkSkyDataBlockObject", async () => {
     api.setExcludes(["hourly"]);
 
-    const res = (await api.get("hourly")) as DarkSkyDataBlockObject;
+    const res = (await api.get("hourly")) as DarkSkyHourlyBlockObject;
 
     expect(res).not.toBeUndefined();
   });
@@ -77,7 +78,7 @@ describe("Dark Sky Client Tests", () => {
   it("DarkSkyApiClient - get (after clearing cached data) - Returns ", async () => {
     api.clear();
 
-    const res = (await api.get("hourly")) as DarkSkyDataBlockObject;
+    const res = (await api.get("hourly")) as DarkSkyHourlyBlockObject;
 
     expect(res).not.toBeUndefined();
   });

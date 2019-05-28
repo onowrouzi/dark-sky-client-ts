@@ -1,7 +1,7 @@
 {
   "name": "dark-sky-client-ts",
   "description": "Simple typescript wrapper for dark sky weather api.",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "author": "Omid Nowrouzi <onowrouzi@outlook.com>",
   "license": "UNLICENSED",
   "keywords": [
