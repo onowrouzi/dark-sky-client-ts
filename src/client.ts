@@ -60,8 +60,6 @@ export class DarkSkyApiClient {
       params.timeString
     ) {
       data = await this.request(params);
-    } else {
-      console.log("Using existing data.", this.lastFetched.toISOString());
     }
 
     return field ? data[field] : data;
@@ -203,7 +201,6 @@ export class DarkSkyApiClient {
         this.params.timeSeconds = null;
         this.params.timeString = null;
 
-        console.log("Dark Sky API call executed", new Date().toISOString());
         return data;
       })
       .catch((err: any) => {
