@@ -7,6 +7,7 @@ export type DarkSkyDailyResponse = DarkSkyDataPointObject & {
   apparentTemperatureMaxTime?: number;
   sunriseTime?: number;
   moonPhase?: number;
+  precipAccumulation?: number;
   precipIntensityMax?: number;
   precipIntensityMaxTime?: number;
   sunsetTime?: number;
