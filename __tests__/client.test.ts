@@ -6,29 +6,27 @@ require("dotenv").config();
 
 describe("Dark Sky Client Tests", () => {
   process.env = Object.assign(process.env, { ENV: "test" });
+  const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
+  const lat = parseFloat(process.env.TEST_LAT);
+  const lng = parseFloat(process.env.TEST_LNG);
 
-  it("DarkSkyApiClient - get - Returns full response", async () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
-    const lat = parseFloat(process.env.TEST_LAT);
-    const lng = parseFloat(process.env.TEST_LNG);
-
-    api.setCoords(lat, lng);
-
-    const res = (await api.get()) as DarkSkyResponseObject;
-
-    expect(res).not.toBeNull();
-    expect(res.alerts).not.toBeNull();
-    expect(res.currently).not.toBeNull();
-    expect(res.daily).not.toBeNull();
+  beforeEach(() => {
+    api.setRequestParams({
+      latitude: lat,
+      longitude: lng
+    });
+    api.setExcludes(["minutely"]);
   });
 
-  it("DarkSkyApiClient - get (with all params) - Returns full response without flags", async () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
+  it("DarkSkyApiClient - get - Returns full response", async () => {
+    const res = await api.getWeather();
 
-    const lat = parseFloat(process.env.TEST_LAT);
-    const lng = parseFloat(process.env.TEST_LNG);
+    expect(res).not.toBeUndefined();
+    expect(res.currently).not.toBeUndefined();
+    expect(res.daily).not.toBeUndefined();
+  });
 
+  it("DarkSkyApiClient - get (with all params & time as number) - Returns full response without flags", async () => {
     api.setCoords(lat, lng);
     api.setLang("en");
     api.setUnits("us");
@@ -37,24 +35,20 @@ describe("Dark Sky Client Tests", () => {
 
     const res = (await api.get()) as DarkSkyResponseObject;
 
-    expect(res).not.toBeNull();
-    expect(res.currently).not.toBeNull();
-    expect(res.daily).not.toBeNull();
-    expect(res.hourly).not.toBeNull();
-    expect(res.minutely).not.toBeNull();
+    expect(res).not.toBeUndefined();
+    expect(res.currently).not.toBeUndefined();
+    expect(res.daily).not.toBeUndefined();
+    expect(res.hourly).not.toBeUndefined();
+    expect(res.minutely).not.toBeUndefined();
     expect(res.flags).toBeUndefined();
   });
 
-  it("DarkSkyApiClient - get (with all params passed in) - Returns full response", async () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
-    const lat = parseFloat(process.env.TEST_LAT);
-    const lng = parseFloat(process.env.TEST_LNG);
-
-    api.setCoords(lat, lng);
+  it("DarkSkyApiClient - get (with all params passed in & time as string) - Returns full response", async () => {
     api.setLang("en");
     api.setUnits("us");
     api.setExcludes(["flags"]);
+
+    api.clear(true);
 
     const res = (await api.get(null, {
       latitude: lat,
@@ -64,41 +58,87 @@ describe("Dark Sky Client Tests", () => {
       timeString: new Date("05/08/2018").toISOString()
     })) as DarkSkyResponseObject;
 
-    expect(res).not.toBeNull();
-    expect(res.currently).not.toBeNull();
-    expect(res.daily).not.toBeNull();
-    expect(res.hourly).not.toBeNull();
-    expect(res.minutely).not.toBeNull();
-    expect(res.flags).not.toBeNull();
+    expect(res).not.toBeUndefined();
+    expect(res.currently).not.toBeUndefined();
+    expect(res.daily).not.toBeUndefined();
+    expect(res.hourly).not.toBeUndefined();
+    expect(res.minutely).not.toBeUndefined();
+    expect(res.flags).not.toBeUndefined();
   });
 
-  it("DarkSkyApiClient - get (hours with previously excluded hourly field) - Returns hourly response", async () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
-    const lat = parseFloat(process.env.TEST_LAT);
-    const lng = parseFloat(process.env.TEST_LNG);
-
-    api.setCoords(lat, lng);
+  it("DarkSkyApiClient - get (hours with previously excluded hourly field) - Returns DarkSkyDataBlockObject", async () => {
     api.setExcludes(["hourly"]);
 
     const res = (await api.get("hourly")) as DarkSkyDataBlockObject;
 
-    expect(res).not.toBeNull();
+    expect(res).not.toBeUndefined();
+  });
+
+  it("DarkSkyApiClient - get (after clearing cached data) - Returns ", async () => {
+    api.clear();
+
+    const res = (await api.get("hourly")) as DarkSkyDataBlockObject;
+
+    expect(res).not.toBeUndefined();
   });
 
   it("DarkSkyApiClient - get (with empty api key) - Throws Error", async () => {
-    const api = new DarkSkyApiClient("");
-    await expect(api.get()).rejects.toThrowError();
+    const throwableApi = new DarkSkyApiClient("");
+    await expect(throwableApi.get()).rejects.toThrowError();
   });
 
-  it("DarkSkyApiClient - get (withouot coords) - Throws Error", async () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-    await expect(api.get()).rejects.toThrowError();
+  it("DarkSkyApiClient - get (without coords) - Throws Error", async () => {
+    const throwableApi = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
+    await expect(throwableApi.get()).rejects.toThrowError();
+  });
+
+  it("DarkSkyApiClient - getCurrent - Returns DarkSkyDataPointObject", async () => {
+    const res = await api.getCurrent();
+
+    expect(res).not.toBeUndefined();
+    expect(res.time).not.toBeUndefined();
+  });
+
+  it("DarkSkyApiClient - getMinutely - Returns DarkSkyDataBlockObject", async () => {
+    const res = await api.getMinutely();
+
+    expect(res).not.toBeUndefined();
+    expect(res.data).not.toBeUndefined();
+    expect(res.data.length > 0).toBe(true);
+  });
+
+  it("DarkSkyApiClient - getHourly - Returns DarkSkyDataBlockObject", async () => {
+    const res = await api.getHourly();
+
+    expect(res).not.toBeUndefined();
+    expect(res.data).not.toBeUndefined();
+    expect(res.data.length > 0).toBe(true);
+  });
+
+  it("DarkSkyApiClient - getDaily - Returns DarkSkyDataBlockObject", async () => {
+    const res = await api.getDaily();
+
+    expect(res).not.toBeUndefined();
+    expect(res.data).not.toBeUndefined();
+    expect(res.data.length > 0).toBe(true);
+  });
+
+  it("DarkSkyApiClient - getFlags - Returns DarkSkyFlagsObject", async () => {
+    const res = await api.getFlags();
+
+    expect(res).not.toBeUndefined();
+    expect(res.sources).not.toBeUndefined();
+    expect(res.sources.length > 0).toBe(true);
+  });
+
+  it("DarkSkyApiClient - getAlerts - Returns DarkSkyAlertObject[]", async () => {
+    const res = await api.getAlerts();
+
+    expect(res).not.toBeUndefined();
+    expect(Array.isArray(res)).toBe(true);
   });
 
   it("DarkSkyApiClient - setRequestParams", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     api.setRequestParams({
       latitude: 0,
       longitude: 0,
@@ -117,8 +157,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setRefreshRate", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     api.setRefreshRate(60);
 
     const refreshRate = api.getRefreshRate();
@@ -127,8 +165,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setRefreshRate (below 30)", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     api.setRefreshRate(10);
 
     const refreshRate = api.getRefreshRate();
@@ -137,8 +173,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setLang", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     api.setLang("zh");
 
     const params = api.getRequestParams();
@@ -147,8 +181,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setUnits", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     api.setUnits("uk2");
 
     const params = api.getRequestParams();
@@ -157,8 +189,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setExcludes", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     api.setExcludes(["minutely", "flags"]);
 
     const params = api.getRequestParams();
@@ -167,8 +197,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setTime (with number)", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     const time = new Date().getTime();
 
     api.setTime(time);
@@ -180,8 +208,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setTime (with string)", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     const time = new Date().toISOString();
 
     api.setTime(time);
@@ -193,8 +219,6 @@ describe("Dark Sky Client Tests", () => {
   });
 
   it("DarkSkyApiClient - setTime (with invalid string)", () => {
-    const api = new DarkSkyApiClient(process.env.DARK_SKY_API_KEY);
-
     const time = "12-25-2001";
 
     api.setTime(time);

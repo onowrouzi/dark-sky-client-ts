@@ -7,7 +7,7 @@ import { DarkSkyDataBlockObject } from "./types/data-block-object";
 import { DarkSkyDataPointObject } from "./types/data-point-object";
 import { DarkSkyAlertObject } from "./types/alert-object";
 import { DarkSkyFlagsObject } from "./types/flags-object";
-import * as rpn from "request-promise-native";
+import { get } from "request-promise-native";
 import fetchJsonp = require("fetch-jsonp");
 
 export class DarkSkyApiClient {
@@ -60,13 +60,23 @@ export class DarkSkyApiClient {
       params.timeString
     ) {
       data = await this.request(params);
+    } else {
+      console.log("Using existing data.", this.lastFetched.toISOString());
     }
 
     return field ? data[field] : data;
   }
 
+  async getWeather(): Promise<DarkSkyResponseObject> {
+    return (await this.get()) as DarkSkyResponseObject;
+  }
+
   async getCurrent(): Promise<DarkSkyDataPointObject> {
     return (await this.get("currently")) as DarkSkyDataPointObject;
+  }
+
+  async getMinutely(): Promise<DarkSkyDataBlockObject> {
+    return (await this.get("minutely")) as DarkSkyDataBlockObject;
   }
 
   async getHourly(): Promise<DarkSkyDataBlockObject> {
@@ -78,7 +88,7 @@ export class DarkSkyApiClient {
   }
 
   async getAlerts(): Promise<DarkSkyAlertObject[]> {
-    return (await this.get("alerts")) as DarkSkyAlertObject[];
+    return ((await this.get("alerts")) as DarkSkyAlertObject[]) || [];
   }
 
   async getFlags(): Promise<DarkSkyFlagsObject> {
@@ -131,6 +141,12 @@ export class DarkSkyApiClient {
     this.refreshRate = refreshRate > 30 ? refreshRate : 30;
   }
 
+  clear(includeParams?: boolean) {
+    this.currentData = null;
+    this.lastFetched = null;
+    this.params = includeParams ? { exclude: ["minutely"] } : this.params;
+  }
+
   private parseurl(params: DarkSkyRequestObject): string {
     if (!this.key) {
       throw new Error("No api key specified.");
@@ -171,7 +187,10 @@ export class DarkSkyApiClient {
     const url = this.parseurl(params);
     const call =
       process.env.ENV == "test"
-        ? rpn.get(url)
+        ? get({
+            uri: url,
+            json: true
+          })
         : fetchJsonp(url).then((res: any) => res.json());
 
     return await call
@@ -184,6 +203,7 @@ export class DarkSkyApiClient {
         this.params.timeSeconds = null;
         this.params.timeString = null;
 
+        console.log("Dark Sky API call executed", new Date().toISOString());
         return data;
       })
       .catch((err: any) => {

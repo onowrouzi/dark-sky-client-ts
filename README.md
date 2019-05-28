@@ -18,11 +18,13 @@ import { DarkSkyApiClient } from "dark-sky-client-ts"; // And any other types ne
 const dsApi = new DarkSkyApiClient(apiKey, params);
 
 async getWeather() {
-    const weather = await dsApi.get();
+    const weatherIsh = await dsApi.get(); // requires type assertion.
+    const weather = await dsApi.getWeather(); // resolves type.
 }
 
 async getHourly() {
-    const hourly = await dsApi.get("hourly");
+    const hourlyIsh = await dsApi.get("hourly"); // requires type assertion.
+    const hourly = await dsApi.getHourly(); // resolves type.
 }
 
 async getDaily() {
@@ -53,9 +55,46 @@ async get(
   )
 ```
 
+###### Note: Responses are stored for the duration of the refresh rate, unless it is a Time Machine request.
+
+```javascript
+getWeather(); // Returns full api response.
+```
+
+```javascript
+getCurrently(); // Returns currently field from api response.
+```
+
+```javascript
+getMinutely(); // Returns minutely field from api response.
+```
+
+```javascript
+getHourly(); // Returns hourly field from api response.
+```
+
+```javascript
+getDaily(); // Returns daily field from api response.
+```
+
+```javascript
+getAlerts(); // Returns alerts field from api response.
+```
+
+```javascript
+getFlags(); // Returns flags field from api response.
+```
 
 ```javascript
 getRequestParams(); // Returns current request params.
+```
+
+```javascript
+getRefreshRate(): number // Gets current refresh rate for data in minutes.
+```
+
+```javascript
+setRefreshRate(refreshRate: number) // Sets current refresh rate for data in minutes. Minimum is 30.
 ```
 
 ```javascript
@@ -87,7 +126,6 @@ setTime(time: number | string) // Sets time for Time Machine requests, parsed in
 ```
 
 ###### Note: `time` is used for Time Machine requests and is reset to null after each call.
-
 
 ## DarkSkyRequestObject
 
