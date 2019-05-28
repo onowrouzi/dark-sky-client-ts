@@ -65,6 +65,26 @@ export class DarkSkyApiClient {
     return field ? data[field] : data;
   }
 
+  async getCurrent(): Promise<DarkSkyDataPointObject> {
+    return (await this.get("currently")) as DarkSkyDataPointObject;
+  }
+
+  async getHourly(): Promise<DarkSkyDataBlockObject> {
+    return (await this.get("hourly")) as DarkSkyDataBlockObject;
+  }
+
+  async getDaily(): Promise<DarkSkyDataBlockObject> {
+    return (await this.get("daily")) as DarkSkyDataBlockObject;
+  }
+
+  async getAlerts(): Promise<DarkSkyAlertObject[]> {
+    return (await this.get("alerts")) as DarkSkyAlertObject[];
+  }
+
+  async getFlags(): Promise<DarkSkyFlagsObject> {
+    return (await this.get("flags")) as DarkSkyFlagsObject;
+  }
+
   getRequestParams(): DarkSkyRequestObject {
     return this.params;
   }
