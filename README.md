@@ -2,7 +2,7 @@
 
 A simple typescript client for Dark Sky API.
 
-All types based off what is found in the offication API [documentation](https://darksky.net/dev/docs).
+All types based off what is found in the official API [documentation](https://darksky.net/dev/docs).
 
 DISCLAIMER: This does not use a proxy and as such does not hide your api key during requests. If you would like to use a proxy approach there are several other packages that offer it.
 
@@ -145,4 +145,4 @@ setTime(time: number | string) // Sets time for Time Machine requests, parsed in
 
 ## DarkSkyResponseObject
 
-For the sake of brevity, I'm going to go ahead and say that all reponses should match what is outlined in the offication API [documentation](https://darksky.net/dev/docs).
+For the sake of brevity, I'm going to go ahead and say that all reponses should match what is outlined in the official API [documentation](https://darksky.net/dev/docs).
