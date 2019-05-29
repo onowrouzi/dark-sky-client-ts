@@ -58,35 +58,39 @@ async get(
 ###### Note: Responses are stored for the duration of the refresh rate, unless it is a Time Machine request.
 
 ```javascript
-getWeather(); // Returns full api response.
+getWeather(): Promise<DarkSkyResponseObject> // Returns full api response.
 ```
 
 ```javascript
-getCurrently(); // Returns currently field from api response.
+getCurrently(): Promise<DarkSkyCurrentlyResponse> // Returns currently field from api response.
 ```
 
 ```javascript
-getMinutely(); // Returns minutely field from api response.
+getMinutely(): Promise<DarkSkyDataBlockObject> // Returns minutely field from api response.
 ```
 
 ```javascript
-getHourly(); // Returns hourly field from api response.
+getHourly(): Promise<DarkSkyHourlyBlockObject> // Returns hourly field from api response.
 ```
 
 ```javascript
-getDaily(); // Returns daily field from api response.
+getDaily(): Promise<DarkSkyDailyBlockObject> // Returns daily field from api response.
 ```
 
 ```javascript
-getAlerts(); // Returns alerts field from api response.
+getAlerts(): Promise<DarkSkyAlertObject[]> // Returns alerts field from api response.
 ```
 
 ```javascript
-getFlags(); // Returns flags field from api response.
+getFlags(): Promise<DarkSkyFlagsObject> // Returns flags field from api response.
 ```
 
 ```javascript
-getRequestParams(); // Returns current request params.
+getRequestParams(): DarkSkyRequestObject // Returns current request params.
+```
+
+```javascript
+setRequestParams(request: DarkSkyRequestObject) // Sets current request params.
 ```
 
 ```javascript
@@ -95,10 +99,6 @@ getRefreshRate(): number // Gets current refresh rate for data in minutes.
 
 ```javascript
 setRefreshRate(refreshRate: number) // Sets current refresh rate for data in minutes. Minimum is 30.
-```
-
-```javascript
-setRequestParams(request: DarkSkyRequestObject) // Sets current request params.
 ```
 
 ```javascript
@@ -145,4 +145,25 @@ setTime(time: number | string) // Sets time for Time Machine requests, parsed in
 
 ## DarkSkyResponseObject
 
-For the sake of brevity, I'm going to go ahead and say that all reponses should match what is outlined in the official API [documentation](https://darksky.net/dev/docs).
+For the sake of brevity, I'm going to go ahead and say that all reponses should match what is outlined in the official API [documentation](https://darksky.net/dev/docs). But for a general type skeleton:
+
+```javascript
+DarkSkyResponseObject {
+    ...
+    DarkSkyCurrentlyResponse // currently
+    DarkSkyDataBlockObject { // minutely
+        ...
+        DarkSkyDataPointObject[]
+    }
+    DarkSkyHourlyBlockObject { // hourly
+        ...
+        DarkSkyHourlyResponse[]
+    }
+    DarkSkyDailyBlockObject { // daily
+        ...
+        DarkSkyDailyResponse[]
+    }
+    DarkSkyAlertObject[] // alerts
+    DarkSkyFlagsObject // flags
+}
+```
